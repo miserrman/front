@@ -15,17 +15,7 @@
 
       <el-table-column align="center" label="管理员名称" prop="username"/>
 
-      <el-table-column align="center" label="管理员头像" prop="avatar">
-        <template slot-scope="scope">
-          <img v-if="scope.row.avatar" :src="scope.row.avatar" width="40">
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="管理员角色" prop="roleIds">
-        <template slot-scope="scope">
-          <el-tag v-for="roleId in scope.row.roleIds" :key="roleId" type="primary" style="margin-right: 20px;"> {{ formatRole(roleId) }} </el-tag>
-        </template>
-      </el-table-column>
+      <el-table-column align="center" label="管理员密码" prop="password"/>
 
       <el-table-column align="center" label="操作" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -45,27 +35,6 @@
         </el-form-item>
         <el-form-item label="管理员密码" prop="password">
           <el-input v-model="dataForm.password" type="password" auto-complete="off"/>
-        </el-form-item>
-        <el-form-item label="管理员头像" prop="avatar">
-          <el-upload
-            :headers="headers"
-            :action="uploadPath"
-            :show-file-list="false"
-            :on-success="uploadAvatar"
-            class="avatar-uploader"
-            accept=".jpg,.jpeg,.png,.gif">
-            <img v-if="dataForm.avatar" :src="dataForm.avatar" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"/>
-          </el-upload>
-        </el-form-item>
-        <el-form-item label="管理员角色" prop="roleIds">
-          <el-select v-model="dataForm.roleIds" multiple placeholder="请选择">
-            <el-option
-              v-for="item in roleOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"/>
-          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -124,16 +93,12 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        username: undefined,
-        sort: 'add_time',
-        order: 'desc'
+        username: undefined
       },
       dataForm: {
         id: undefined,
         username: undefined,
-        password: undefined,
-        avatar: undefined,
-        roleIds: []
+        password: undefined
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -196,13 +161,8 @@ export default {
       this.dataForm = {
         id: undefined,
         username: undefined,
-        password: undefined,
-        avatar: undefined,
-        roleIds: []
+        password: undefined
       }
-    },
-    uploadAvatar: function(response) {
-      this.dataForm.avatar = response.data.url
     },
     handleCreate() {
       this.resetForm()
@@ -244,10 +204,10 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
-          updateAdmin(this.dataForm)
+          updateAdmin(this.id, this.dataForm)
             .then(() => {
               for (const v of this.list) {
-                if (v.id === this.dataForm.id) {
+                if (v.id === this.id) {
                   const index = this.list.indexOf(v)
                   this.list.splice(index, 1, this.dataForm)
                   break
@@ -269,7 +229,7 @@ export default {
       })
     },
     handleDelete(row) {
-      deleteAdmin(row)
+      deleteAdmin(this.id)
         .then(response => {
           this.$notify.success({
             title: '成功',
@@ -288,8 +248,8 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['管理员ID', '管理员名称', '管理员头像']
-        const filterVal = ['id', 'username', 'avatar']
+        const tHeader = ['管理员ID', '管理员名称']
+        const filterVal = ['id', 'username']
         excel.export_json_to_excel2(
           tHeader,
           this.list,

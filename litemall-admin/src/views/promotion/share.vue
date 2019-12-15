@@ -87,9 +87,7 @@
 
       <el-table-column align="center" label="操作" width="300" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button type="success" size="mini" @click="handleCombine(scope.row)">组合</el-button>
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button type="success" size="medium" @click="handleShare(scope.row)">设定推广规则</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -173,6 +171,9 @@ export default {
     handleUpdate(row) {
       this.$router.push({ path: '/goods/edit', query: { id: row.id }})
     },
+    handleShare(row) {
+      this.$router.push({ path: '/promotion/shareRule', query: { id: row.id }})
+    },
     handleCombine(row) {
       this.$router.push({ path: '/goods/combine' })
     },
@@ -197,12 +198,12 @@ export default {
     },
     handleDownload() {
       this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['商品ID', '商品编号', '名称', '专柜价格', '当前价格', '是否新品', '是否热品', '是否在售', '首页主图', '宣传图片列表', '商品介绍', '详细介绍', '商品图片', '商品单位', '关键字', '类目ID', '品牌商ID']
-        const filterVal = ['id', 'goodsSn', 'name', 'counterPrice', 'retailPrice', 'isNew', 'isHot', 'isOnSale', 'listPicUrl', 'gallery', 'brief', 'detail', 'picUrl', 'goodsUnit', 'keywords', 'categoryId', 'brandId']
-        excel.export_json_to_excel2(tHeader, this.list, filterVal, '商品信息')
-        this.downloadLoading = false
-      })
+        import('@/vendor/Export2Excel').then(excel => {
+          const tHeader = ['商品ID', '商品编号', '名称', '专柜价格', '当前价格', '是否新品', '是否热品', '是否在售', '首页主图', '宣传图片列表', '商品介绍', '详细介绍', '商品图片', '商品单位', '关键字', '类目ID', '品牌商ID']
+          const filterVal = ['id', 'goodsSn', 'name', 'counterPrice', 'retailPrice', 'isNew', 'isHot', 'isOnSale', 'listPicUrl', 'gallery', 'brief', 'detail', 'picUrl', 'goodsUnit', 'keywords', 'categoryId', 'brandId']
+          excel.export_json_to_excel2(tHeader, this.list, filterVal, '商品信息')
+          this.downloadLoading = false
+        })
     }
   }
 }

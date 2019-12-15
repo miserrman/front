@@ -3,7 +3,7 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入广告标题"/>
+      <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入广告名称"/>
       <el-input v-model="listQuery.content" clearable class="filter-item" style="width: 200px;" placeholder="请输入广告内容"/>
       <el-button v-permission="['GET /admin/ad/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button v-permission="['POST /admin/ad/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
@@ -15,25 +15,33 @@
 
       <el-table-column align="center" label="广告ID" prop="id" sortable/>
 
-      <el-table-column align="center" label="广告标题" prop="name"/>
+      <el-table-column align="center" label="广告链接" prop="link" sortable/>
+
+      <el-table-column align="center" label="广告名称" prop="name"/>
 
       <el-table-column align="center" label="广告内容" prop="content"/>
 
-      <el-table-column align="center" label="广告图片" prop="url">
+      <el-table-column align="center" label="广告图片" prop="picUrl">
         <template slot-scope="scope">
-          <img v-if="scope.row.url" :src="scope.row.url" width="80">
+          <img v-if="scope.row.picUrl" :src="scope.row.picUrl" width="80">
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="广告位置" prop="position"/>
-
-      <el-table-column align="center" label="活动链接" prop="link"/>
-
-      <el-table-column align="center" label="是否启用" prop="enabled">
+      <el-table-column align="center" label="是否默认" prop="beDefault">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.enabled ? 'success' : 'error' ">{{ scope.row.enabled ? '启用' : '不启用' }}</el-tag>
+          <el-tag :type="scope.row.beDefault ? 0 : 1 ">{{ scope.row.beDefault ? '不是' : '是' }}</el-tag>
         </template>
       </el-table-column>
+
+      <el-table-column align="center" label="是否启用" prop="beEnabled">
+        <template slot-scope="scope">
+          <el-tag :type="scope.row.beEnabled ? 'success' : 'error' ">{{ scope.row.beEnabled ? '启用' : '不启用' }}</el-tag>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="上线时间" prop="startTime"/>
+
+      <el-table-column align="center" label="下线时间" prop="endTime"/>
 
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -48,40 +56,45 @@
     <!-- 添加或修改对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="广告标题" prop="name">
+        <el-form-item label="广告名称" prop="name">
           <el-input v-model="dataForm.name"/>
         </el-form-item>
         <el-form-item label="广告内容" prop="content">
           <el-input v-model="dataForm.content"/>
         </el-form-item>
-        <el-form-item label="广告图片" prop="url">
+        <el-form-item label="广告图片" prop="picUrl">
           <el-upload
             :headers="headers"
-            :action="uploadPath"
+            :action="uploadPic"
             :show-file-list="false"
             :on-success="uploadUrl"
             :before-upload="checkFileSize"
             class="avatar-uploader"
             accept=".jpg,.jpeg,.png,.gif">
-            <img v-if="dataForm.url" :src="dataForm.url" class="avatar">
+            <img v-if="dataForm.picUrl" :src="dataForm.picUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"/>
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过1024kb</div>
           </el-upload>
         </el-form-item>
-        <el-form-item label="广告位置" prop="position">
-          <el-select v-model="dataForm.position" placeholder="请选择">
-            <el-option :value="1" label="首页"/>
+        <el-form-item label="是否默认" prop="beDefault">
+          <el-select v-model="dataForm.beDefault" placeholder="请选择">
+            <el-option :value="true" label="是"/>
+            <el-option :value="false" label="不是"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="活动链接" prop="link">
-          <el-input v-model="dataForm.link"/>
-        </el-form-item>
-        <el-form-item label="是否启用" prop="enabled">
-          <el-select v-model="dataForm.enabled" placeholder="请选择">
+        <el-form-item label="是否启用" prop="beEnabled">
+          <el-select v-model="dataForm.beEnabled" placeholder="请选择">
             <el-option :value="true" label="启用"/>
             <el-option :value="false" label="不启用"/>
           </el-select>
         </el-form-item>
+        <el-form-item label="上线时间" prop="startTime">
+          <el-input v-model="dataForm.startTime"/>
+        </el-form-item>
+        <el-form-item label="下线时间" prop="endTime">
+          <el-input v-model="dataForm.endTime"/>
+        </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
@@ -138,18 +151,17 @@ export default {
         page: 1,
         limit: 20,
         name: undefined,
-        content: undefined,
-        sort: 'add_time',
-        order: 'desc'
+        content: undefined
       },
       dataForm: {
         id: undefined,
         name: undefined,
         content: undefined,
-        url: undefined,
-        link: undefined,
-        position: 1,
-        enabled: true
+        picUrl: undefined,
+        beEnabled: true,
+        beDefault: false,
+        startTime: undefined,
+        endTime: undefined
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -164,7 +176,7 @@ export default {
         content: [
           { required: true, message: '广告内容不能为空', trigger: 'blur' }
         ],
-        url: [{ required: true, message: '广告链接不能为空', trigger: 'blur' }]
+        picUrl: [{ required: true, message: '广告链接不能为空', trigger: 'blur' }]
       },
       downloadLoading: false
     }
@@ -203,10 +215,11 @@ export default {
         id: undefined,
         name: undefined,
         content: undefined,
-        url: undefined,
-        link: undefined,
-        position: 1,
-        enabled: true
+        picUrl: undefined,
+        beEnabled: true,
+        beDefault: false,
+        startTime: undefined,
+        endTime: undefined
       }
     },
     handleCreate() {
@@ -218,7 +231,7 @@ export default {
       })
     },
     uploadUrl: function(response) {
-      this.dataForm.url = response.data.url
+      this.dataForm.picUrl = response.data.picUrl
     },
     checkFileSize: function(file) {
       if (file.size > 1048576) {
@@ -259,10 +272,10 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
-          updateAd(this.dataForm)
+          updateAd(this.id, this.dataForm)
             .then(() => {
               for (const v of this.list) {
-                if (v.id === this.dataForm.id) {
+                if (v.id === this.id) {
                   const index = this.list.indexOf(v)
                   this.list.splice(index, 1, this.dataForm)
                   break
@@ -284,7 +297,7 @@ export default {
       })
     },
     handleDelete(row) {
-      deleteAd(row)
+      deleteAd(this.id)
         .then(response => {
           this.$notify.success({
             title: '成功',
@@ -308,18 +321,20 @@ export default {
           '广告标题',
           '广告内容',
           '广告图片',
-          '广告位置',
-          '活动链接',
-          '是否启用'
+          '是否默认',
+          '是否启用',
+          '上线时间',
+          '下线时间'
         ]
         const filterVal = [
           'id',
           'name',
           'content',
-          'url',
-          'postion',
-          'link',
-          'enabled'
+          'picUrl',
+          'beEnabled',
+          'beDefault',
+          'startTime',
+          'endTime'
         ]
         excel.export_json_to_excel2(tHeader, this.list, filterVal, '广告信息')
         this.downloadLoading = false

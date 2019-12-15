@@ -23,9 +23,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" min-width="400px" label="介绍" prop="desc"/>
-
-      <el-table-column align="center" label="底价" prop="floorPrice"/>
+      <el-table-column align="center" min-width="400px" label="品牌描述" prop="describe"/>
 
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -43,13 +41,13 @@
         <el-form-item label="品牌商名称" prop="name">
           <el-input v-model="dataForm.name"/>
         </el-form-item>
-        <el-form-item label="介绍" prop="simpleDesc">
-          <el-input v-model="dataForm.desc"/>
+        <el-form-item label="品牌描述" prop="simpledescribe">
+          <el-input v-model="dataForm.describe"/>
         </el-form-item>
         <el-form-item label="品牌商图片" prop="picUrl">
           <el-upload
             :headers="headers"
-            :action="uploadPath"
+            :action="uploadPic"
             :show-file-list="false"
             :on-success="uploadPicUrl"
             class="avatar-uploader"
@@ -57,9 +55,6 @@
             <img v-if="dataForm.picUrl" :src="dataForm.picUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"/>
           </el-upload>
-        </el-form-item>
-        <el-form-item label="底价" prop="floorPrice">
-          <el-input v-model="dataForm.floorPrice"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -117,15 +112,12 @@ export default {
         page: 1,
         limit: 20,
         id: undefined,
-        name: undefined,
-        sort: 'add_time',
-        order: 'desc'
+        name: undefined
       },
       dataForm: {
         id: undefined,
         name: '',
-        desc: '',
-        floorPrice: undefined,
+        describe: '',
         picUrl: undefined
       },
       dialogFormVisible: false,
@@ -175,8 +167,7 @@ export default {
       this.dataForm = {
         id: undefined,
         name: '',
-        desc: '',
-        floorPrice: undefined,
+        describe: '',
         picUrl: undefined
       }
     },
@@ -223,10 +214,10 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
-          updateBrand(this.dataForm)
+          updateBrand(this.id, this.dataForm)
             .then(() => {
               for (const v of this.list) {
-                if (v.id === this.dataForm.id) {
+                if (v.id === this.id) {
                   const index = this.list.indexOf(v)
                   this.list.splice(index, 1, this.dataForm)
                   break
@@ -248,7 +239,7 @@ export default {
       })
     },
     handleDelete(row) {
-      deleteBrand(row)
+      deleteBrand(this.id)
         .then(response => {
           this.$notify.success({
             title: '成功',
@@ -270,11 +261,10 @@ export default {
         const tHeader = [
           '品牌商ID',
           '品牌商名称',
-          '介绍',
-          '低价',
+          '品牌描述',
           '品牌商图片'
         ]
-        const filterVal = ['id', 'name', 'desc', 'floorPrice', 'picUrl']
+        const filterVal = ['id', 'name', 'describe', 'picUrl']
         excel.export_json_to_excel2(
           tHeader,
           this.list,

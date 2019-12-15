@@ -38,11 +38,11 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="商品编号" prop="goodsSn"/>
+      <el-table-column align="center" label="组合商品编号" prop="goodsSn"/>
 
-      <el-table-column align="center" min-width="100" label="名称" prop="name"/>
+      <el-table-column align="center" min-width="100" label="组合商品名称" prop="name"/>
 
-      <el-table-column align="center" property="iconUrl" label="图片">
+      <el-table-column align="center" property="iconUrl" label="组合商品图片">
         <template slot-scope="scope">
           <img :src="scope.row.picUrl" width="40">
         </template>
@@ -56,7 +56,7 @@
 
       <el-table-column align="center" label="详情" prop="detail">
         <template slot-scope="scope">
-          <el-dialog :visible.sync="detailDialogVisible" title="商品详情">
+          <el-dialog :visible.sync="detailDialogVisible" title="组合商品详情">
             <div v-html="goodsDetail"/>
           </el-dialog>
           <el-button type="primary" size="mini" @click="showDetail(scope.row.detail)">查看</el-button>
@@ -87,7 +87,7 @@
 
       <el-table-column align="center" label="操作" width="300" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button type="success" size="mini" @click="handleCombine(scope.row)">组合</el-button>
+          <el-button type="success" size="mini" @click="handleCombine(scope.row)">继续组合</el-button>
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
           <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
         </template>
@@ -197,12 +197,12 @@ export default {
     },
     handleDownload() {
       this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['商品ID', '商品编号', '名称', '专柜价格', '当前价格', '是否新品', '是否热品', '是否在售', '首页主图', '宣传图片列表', '商品介绍', '详细介绍', '商品图片', '商品单位', '关键字', '类目ID', '品牌商ID']
-        const filterVal = ['id', 'goodsSn', 'name', 'counterPrice', 'retailPrice', 'isNew', 'isHot', 'isOnSale', 'listPicUrl', 'gallery', 'brief', 'detail', 'picUrl', 'goodsUnit', 'keywords', 'categoryId', 'brandId']
-        excel.export_json_to_excel2(tHeader, this.list, filterVal, '商品信息')
-        this.downloadLoading = false
-      })
+        import('@/vendor/Export2Excel').then(excel => {
+          const tHeader = ['商品ID', '商品编号', '名称', '专柜价格', '当前价格', '是否新品', '是否热品', '是否在售', '首页主图', '宣传图片列表', '商品介绍', '详细介绍', '商品图片', '商品单位', '关键字', '类目ID', '品牌商ID']
+          const filterVal = ['id', 'goodsSn', 'name', 'counterPrice', 'retailPrice', 'isNew', 'isHot', 'isOnSale', 'listPicUrl', 'gallery', 'brief', 'detail', 'picUrl', 'goodsUnit', 'keywords', 'categoryId', 'brandId']
+          excel.export_json_to_excel2(tHeader, this.list, filterVal, '商品信息')
+          this.downloadLoading = false
+        })
     }
   }
 }
