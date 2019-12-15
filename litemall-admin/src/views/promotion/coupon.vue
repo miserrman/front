@@ -20,6 +20,12 @@
 
       <el-table-column align="center" label="优惠券ID" prop="id" sortable/>
 
+      <el-table-column align="center" label="所属用户ID" prop="userId" sortable/>
+
+      <el-table-column align="center" label="所属优惠券规则ID" prop="couponRuleId" sortable/>
+
+      <el-table-column align="center" label="优惠券序列号" prop="couponSn"/>
+
       <el-table-column align="center" label="优惠券名称" prop="name"/>
 
       <el-table-column align="center" label="介绍" prop="desc"/>

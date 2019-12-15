@@ -258,11 +258,10 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
-          updateCategory(this.dataForm)
+          updateCategory(this.id, this.dataForm)
             .then(() => {
               this.getList()
               // 更新L1目录
-              this.getCatL1()
               this.dialogFormVisible = false
               this.$notify.success({
                 title: '成功',
@@ -279,11 +278,10 @@ export default {
       })
     },
     handleDelete(row) {
-      deleteCategory(row)
+      deleteCategory(this.id)
         .then(response => {
           this.getList()
           // 更新L1目录
-          this.getCatL1()
           this.$notify.success({
             title: '成功',
             message: '删除成功'

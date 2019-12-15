@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function listCoupon(query) {
   return request({
-    url: '/coupon/list',
+    url: '/coupons',
     method: 'get',
     params: query
   })
