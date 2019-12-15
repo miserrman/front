@@ -63,8 +63,8 @@ export const constantRouterMap = [
     children: [
       {
         path: 'dashboard',
-        component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
+        component: () => import('@/views/dashboard/main'),
+        name: 'main',
         meta: { title: '首页', icon: 'dashboard', noCache: true }
       }
     ]
@@ -201,8 +201,8 @@ export const asyncRouterMap = [
           title: '订单管理',
           noCache: true
         }
-      },
-      {
+      }
+      /* {
         path: 'issue',
         component: () => import('@/views/mall/issue'),
         name: 'issue',
@@ -211,8 +211,8 @@ export const asyncRouterMap = [
           title: '通用问题',
           noCache: true
         }
-      },
-      {
+      },*/
+      /* {
         path: 'keyword',
         component: () => import('@/views/mall/keyword'),
         name: 'keyword',
@@ -221,7 +221,7 @@ export const asyncRouterMap = [
           title: '关键词',
           noCache: true
         }
-      }
+      }*/
     ]
   },
 
@@ -484,7 +484,7 @@ export const asyncRouterMap = [
     ]
   },
 
-  {
+  /* {
     path: '/stat',
     component: Layout,
     redirect: 'noredirect',
@@ -526,7 +526,7 @@ export const asyncRouterMap = [
         }
       }
     ]
-  },
+  },*/
   {
     path: 'external-link',
     component: Layout,
