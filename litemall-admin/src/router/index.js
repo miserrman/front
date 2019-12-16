@@ -109,6 +109,7 @@ export const asyncRouterMap = [
           noCache: true
         }
       },
+      /*
       {
         path: 'collect',
         component: () => import('@/views/user/collect'),
@@ -118,7 +119,7 @@ export const asyncRouterMap = [
           title: '会员收藏',
           noCache: true
         }
-      },
+      },*/
       {
         path: 'footprint',
         component: () => import('@/views/user/footprint'),
@@ -128,7 +129,9 @@ export const asyncRouterMap = [
           title: '会员足迹',
           noCache: true
         }
-      },
+      }
+      /*
+      ,
       {
         path: 'history',
         component: () => import('@/views/user/history'),
@@ -138,7 +141,8 @@ export const asyncRouterMap = [
           title: '搜索历史',
           noCache: true
         }
-      },
+      }
+      ,
       {
         path: 'feedback',
         component: () => import('@/views/user/feedback'),
@@ -149,6 +153,7 @@ export const asyncRouterMap = [
           noCache: true
         }
       }
+      */
     ]
   },
 
@@ -416,7 +421,9 @@ export const asyncRouterMap = [
           title: '角色管理',
           noCache: true
         }
-      },
+      }
+      /*
+      ,
       {
         path: 'os',
         component: () => import('@/views/sys/os'),
@@ -427,6 +434,7 @@ export const asyncRouterMap = [
           noCache: true
         }
       }
+      */
     ]
   },
 
