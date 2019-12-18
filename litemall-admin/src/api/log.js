@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function listLog(query) {
   return request({
-    url: '/log/list',
+    url: '/logs',
     method: 'get',
     params: query
   })

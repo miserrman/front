@@ -63,8 +63,8 @@ export const constantRouterMap = [
     children: [
       {
         path: 'dashboard',
-        component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
+        component: () => import('@/views/dashboard/main'),
+        name: 'main',
         meta: { title: '首页', icon: 'dashboard', noCache: true }
       }
     ]
@@ -109,6 +109,7 @@ export const asyncRouterMap = [
           noCache: true
         }
       },
+      /*
       {
         path: 'collect',
         component: () => import('@/views/user/collect'),
@@ -118,7 +119,7 @@ export const asyncRouterMap = [
           title: '会员收藏',
           noCache: true
         }
-      },
+      },*/
       {
         path: 'footprint',
         component: () => import('@/views/user/footprint'),
@@ -128,7 +129,9 @@ export const asyncRouterMap = [
           title: '会员足迹',
           noCache: true
         }
-      },
+      }
+      /*
+      ,
       {
         path: 'history',
         component: () => import('@/views/user/history'),
@@ -138,7 +141,8 @@ export const asyncRouterMap = [
           title: '搜索历史',
           noCache: true
         }
-      },
+      }
+      ,
       {
         path: 'feedback',
         component: () => import('@/views/user/feedback'),
@@ -149,6 +153,7 @@ export const asyncRouterMap = [
           noCache: true
         }
       }
+      */
     ]
   },
 
@@ -201,8 +206,8 @@ export const asyncRouterMap = [
           title: '订单管理',
           noCache: true
         }
-      },
-      {
+      }
+      /* {
         path: 'issue',
         component: () => import('@/views/mall/issue'),
         name: 'issue',
@@ -211,8 +216,8 @@ export const asyncRouterMap = [
           title: '通用问题',
           noCache: true
         }
-      },
-      {
+      },*/
+      /* {
         path: 'keyword',
         component: () => import('@/views/mall/keyword'),
         name: 'keyword',
@@ -221,7 +226,7 @@ export const asyncRouterMap = [
           title: '关键词',
           noCache: true
         }
-      }
+      }*/
     ]
   },
 
@@ -416,7 +421,9 @@ export const asyncRouterMap = [
           title: '角色管理',
           noCache: true
         }
-      },
+      }
+      /*
+      ,
       {
         path: 'os',
         component: () => import('@/views/sys/os'),
@@ -427,6 +434,7 @@ export const asyncRouterMap = [
           noCache: true
         }
       }
+      */
     ]
   },
 
@@ -484,7 +492,7 @@ export const asyncRouterMap = [
     ]
   },
 
-  {
+  /* {
     path: '/stat',
     component: Layout,
     redirect: 'noredirect',
@@ -526,7 +534,7 @@ export const asyncRouterMap = [
         }
       }
     ]
-  },
+  },*/
   {
     path: 'external-link',
     component: Layout,
