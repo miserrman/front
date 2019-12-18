@@ -76,7 +76,7 @@ export function deleteCouponRules(id) {
 
 export function listCouponUser(query) {
   return request({
-    url: '/coupon/listuser',
+    url: '/coupon/listUser',
     method: 'get',
     params: query
   })
