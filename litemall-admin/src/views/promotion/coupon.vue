@@ -18,6 +18,16 @@
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
 
+      userId
+      couponRuleId
+      couponSn
+      beginTime
+      endTime
+      usedTime
+      name
+      picUrl（这是第一次上传图片产生的）
+      statusCode
+
       <el-table-column align="center" label="优惠券ID" prop="id" sortable/>
 
       <el-table-column align="center" label="所属用户ID" prop="userId" sortable/>
@@ -28,35 +38,7 @@
 
       <el-table-column align="center" label="优惠券名称" prop="name"/>
 
-      <el-table-column align="center" label="介绍" prop="desc"/>
-
-      <el-table-column align="center" label="标签" prop="tag"/>
-
-      <el-table-column align="center" label="最低消费" prop="min">
-        <template slot-scope="scope">满{{ scope.row.min }}元可用</template>
-      </el-table-column>
-
-      <el-table-column align="center" label="满减金额" prop="discount">
-        <template slot-scope="scope">减免{{ scope.row.discount }}元</template>
-      </el-table-column>
-
-      <el-table-column align="center" label="每人限领" prop="limit">
-        <template slot-scope="scope">{{ scope.row.limit != 0 ? scope.row.limit : "不限" }}</template>
-      </el-table-column>
-
-      <el-table-column align="center" label="商品使用范围" prop="goodsType">
-        <template slot-scope="scope">{{ scope.row.goodsType | formatGoodsType }}</template>
-      </el-table-column>
-
-      <el-table-column align="center" label="优惠券类型" prop="type">
-        <template slot-scope="scope">{{ scope.row.type | formatType }}</template>
-      </el-table-column>
-
-      <el-table-column align="center" label="优惠券数量" prop="total">
-        <template slot-scope="scope">{{ scope.row.total != 0 ? scope.row.total : "不限" }}</template>
-      </el-table-column>
-
-      <el-table-column align="center" label="状态" prop="status">
+      <el-table-column align="center" label="状态" prop="statusCode">
         <template slot-scope="scope">{{ scope.row.status | formatStatus }}</template>
       </el-table-column>
 
@@ -77,35 +59,19 @@
         <el-form-item label="优惠券名称" prop="name">
           <el-input v-model="dataForm.name"/>
         </el-form-item>
-        <el-form-item label="介绍" prop="desc">
-          <el-input v-model="dataForm.desc"/>
+        <el-form-item label="介绍" prop="brief">
+          <el-input v-model="dataForm.brief"/>
         </el-form-item>
-        <el-form-item label="标签" prop="tag">
-          <el-input v-model="dataForm.tag"/>
+        <el-form-item label="开始时间" prop="beginTime">
+          <el-input v-model="dataForm.beginTime"/>
         </el-form-item>
-        <el-form-item label="最低消费" prop="min">
-          <el-input v-model="dataForm.min">
-            <template slot="append">元</template>
+        <el-form-item label="结束时间" prop="endTime">
+          <el-input v-model="dataForm.endTime"/>
+        </el-form-item>
+        <el-form-item label="收集" prop="collectedNum">
+          <el-input v-model="dataForm.collectedNum">
+            <template slot="append">个</template>
           </el-input>
-        </el-form-item>
-        <el-form-item label="满减金额" prop="discount">
-          <el-input v-model="dataForm.discount">
-            <template slot="append">元</template>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="每人限领" prop="limit">
-          <el-input v-model="dataForm.limit">
-            <template slot="append">张</template>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="分发类型" prop="type">
-          <el-select v-model="dataForm.type">
-            <el-option
-              v-for="type in typeOptions"
-              :key="type.value"
-              :label="type.label"
-              :value="type.value"/>
-          </el-select>
         </el-form-item>
         <el-form-item label="优惠券数量" prop="total">
           <el-input v-model="dataForm.total">
@@ -113,7 +79,7 @@
           </el-input>
         </el-form-item>
         <el-form-item label="有效期">
-          <el-radio-group v-model="dataForm.timeType">
+          <el-radio-group v-model="dataForm.validPeriod">
             <el-radio-button :label="0">领券相对天数</el-radio-button>
             <el-radio-button :label="1">指定绝对时间</el-radio-button>
           </el-radio-group>
@@ -123,7 +89,7 @@
             <template slot="append">天</template>
           </el-input>
         </el-form-item>
-        <el-form-item v-show="dataForm.timeType === 1">
+        <el-form-item v-show="dataForm.validPeriod === 1">
           <el-col :span="11">
             <el-date-picker v-model="dataForm.startTime" type="datetime" placeholder="选择日期" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%;"/>
           </el-col>
@@ -131,19 +97,6 @@
           <el-col :span="11">
             <el-date-picker v-model="dataForm.endTime" type="datetime" placeholder="选择日期" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%;"/>
           </el-col>
-        </el-form-item>
-        <el-form-item label="商品限制范围">
-          <el-radio-group v-model="dataForm.goodsType">
-            <el-radio-button :label="0">全场通用</el-radio-button>
-            <el-radio-button :label="1">指定分类</el-radio-button>
-            <el-radio-button :label="2">指定商品</el-radio-button>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item v-show="dataForm.goodsType === 1">
-          目前不支持
-        </el-form-item>
-        <el-form-item v-show="dataForm.goodsType === 2">
-          目前不支持
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -203,16 +156,20 @@ const defaultTypeOptions = [
 
 const defaultStatusOptions = [
   {
-    label: '正常',
+    label: '未使用',
     value: 0
   },
   {
-    label: '已过期',
+    label: '已使用',
     value: 1
   },
   {
-    label: '已下架',
+    label: '已失效',
     value: 2
+  },
+  {
+    label: '已过期',
+    value: 3
   }
 ]
 
@@ -266,20 +223,21 @@ export default {
       dataForm: {
         id: undefined,
         name: undefined,
-        desc: undefined,
-        tag: undefined,
-        total: 0,
-        discount: 0,
-        min: 0,
-        limit: 1,
-        type: 0,
-        status: 0,
-        goodsType: 0,
-        goodsValue: [],
-        timeType: 0,
-        days: 0,
-        startTime: null,
-        endTime: null
+        userId: undefined,
+        couponRuleId: undefined,
+        couponSn: undefined,
+        beginTime: null,
+        endTime: null,
+        usedTime: null,
+        picUrl: null,
+        statusCode: undefined,
+        brief: undefined,
+        validPeriod: null,
+        strategy: undefined,
+        total: undefined,
+        collectedNum: undefined,
+        goodsList1: null,
+        goodsList2: null
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -321,20 +279,14 @@ export default {
       this.dataForm = {
         id: undefined,
         name: undefined,
-        desc: undefined,
-        tag: undefined,
-        total: 0,
-        discount: 0,
-        min: 0,
-        limit: 1,
-        type: 0,
-        status: 0,
-        goodsType: 0,
-        goodsValue: [],
-        timeType: 0,
-        days: 0,
-        startTime: null,
-        endTime: null
+        userId: undefined,
+        couponRuleId: undefined,
+        couponSn: undefined,
+        beginTime: null,
+        endTime: null,
+        usedTime: null,
+        picUrl: null,
+        statusCode: undefined
       }
     },
     handleCreate() {
@@ -383,10 +335,10 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
-          updateCoupon(this.dataForm)
+          updateCoupon(this.id, this.dataForm)
             .then(() => {
               for (const v of this.list) {
-                if (v.id === this.dataForm.id) {
+                if (v.id === this.id) {
                   const index = this.list.indexOf(v)
                   this.list.splice(index, 1, this.dataForm)
                   break
@@ -408,7 +360,7 @@ export default {
       })
     },
     handleDelete(row) {
-      deleteCoupon(row)
+      deleteCoupon(this.id)
         .then(response => {
           this.$notify.success({
             title: '成功',
