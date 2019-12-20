@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Message, MessageBox } from 'element-ui'
 import store from '@/store'
-import { getToken } from '@/utils/auth'
+import { getToken, setToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
@@ -15,7 +15,7 @@ service.interceptors.request.use(
     // Do something before request is sent
     if (store.getters.token) {
       // 让每个请求携带token-- ['X-Litemall-Admin-Token']为自定义key 请根据实际情况自行修改
-      config.headers['X-Litemall-Admin-Token'] = getToken()
+      config.headers['authorazation'] = getToken()
     }
     return config
   },
@@ -30,6 +30,9 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const res = response.data
+    if (response.headers.authorazation) {
+      setToken(response.headers.authorazation)
+    }
 
     if (res.errno === 501) {
       MessageBox.alert('系统未登录，请重新登录', '错误', {
