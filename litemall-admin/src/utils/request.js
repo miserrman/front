@@ -30,7 +30,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const res = response.data
-    if (response.headers.authorazation) {
+    if (response.headers['authorazation']) {
       setToken(response.headers.authorazation)
     }
 
